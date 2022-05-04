@@ -12,6 +12,8 @@ class PhotosCollectionViewController: UICollectionViewController {
     var networkDataFetcher = NetworkDataFetcher()
     private var timer:Timer?
     
+    private var photos = [UnsplashPhoto]()
+    
     private lazy var addBarButtonItem: UIBarButtonItem = {
         return UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addBarButtonTapped))
     }()
@@ -67,11 +69,12 @@ class PhotosCollectionViewController: UICollectionViewController {
     
     // MARK: - Collection View Data Source, Collection View Delegate
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 5
+        return photos.count
     }
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "CellId", for: indexPath)
+        let unsplashPhoto = photos[indexPath.item]
         cell.backgroundColor = .red
         return cell
     }
@@ -86,8 +89,9 @@ extension PhotosCollectionViewController: UISearchBarDelegate {
         
         timer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: false, block: { (_) in
             self.networkDataFetcher.fetchImages(searchTerm: searchText) { (searchResults) in
-                searchResults?.results.map({ (photo) in
-                    print(photo.urls["small"])
+                searchResults?.results.map({ [weak self] (photo) in
+                    guard let fetchedPhotos = searchResults else { return }
+                    self?.photos = fetchedPhotos.results
                 })
             }
         })
