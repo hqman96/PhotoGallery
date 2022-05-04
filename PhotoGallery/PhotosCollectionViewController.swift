@@ -23,6 +23,7 @@ class PhotosCollectionViewController: UICollectionViewController {
         collectionView.backgroundColor = .orange
         setupCollectionView()
         setupNavigationBar()
+        setupSearchBar()
     }
     
     // MARK - Navigation Items action
@@ -50,6 +51,14 @@ class PhotosCollectionViewController: UICollectionViewController {
         navigationItem.leftBarButtonItem = UIBarButtonItem.init(customView: titleLabel)
         
         navigationItem.rightBarButtonItems = [actionBarButtonItem, addBarButtonItem]
+    }
+    
+    private func setupSearchBar() {
+        let searchController = UISearchController(searchResultsController: nil)
+        navigationItem.searchController = searchController
+        navigationItem.hidesSearchBarWhenScrolling = false
+        searchController.hidesNavigationBarDuringPresentation = false
+        searchController.obscuresBackgroundDuringPresentation = false
     }
     
     // MARK: - Collection View Data Source, Collection View Delegate
