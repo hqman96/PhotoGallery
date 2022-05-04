@@ -59,6 +59,7 @@ class PhotosCollectionViewController: UICollectionViewController {
         navigationItem.hidesSearchBarWhenScrolling = false
         searchController.hidesNavigationBarDuringPresentation = false
         searchController.obscuresBackgroundDuringPresentation = false
+        searchController.searchBar.delegate = self
     }
     
     // MARK: - Collection View Data Source, Collection View Delegate
@@ -72,3 +73,14 @@ class PhotosCollectionViewController: UICollectionViewController {
         return cell
     }
 }
+
+// MARK: - Search Bar Delegate
+
+extension PhotosCollectionViewController: UISearchBarDelegate {
+    
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        print(searchText)
+    }
+    
+}
+
