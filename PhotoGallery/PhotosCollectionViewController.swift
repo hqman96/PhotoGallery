@@ -17,14 +17,6 @@ class PhotosCollectionViewController: UICollectionViewController {
     private let itemsPerRow: CGFloat = 2
     private let sectionInsets = UIEdgeInsets(top: 20, left: 20, bottom: 20, right: 20)
     
-    private lazy var addBarButtonItem: UIBarButtonItem = {
-        return UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addBarButtonTapped))
-    }()
-    
-    private lazy var actionBarButtonItem: UIBarButtonItem = {
-        return UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(actionBarButtonTapped))
-    }()
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -32,16 +24,6 @@ class PhotosCollectionViewController: UICollectionViewController {
         setupCollectionView()
         setupNavigationBar()
         setupSearchBar()
-    }
-    
-    // MARK - Navigation Items action
-    
-    @objc private func addBarButtonTapped() {
-        print(#function)
-    }
-    
-    @objc private func actionBarButtonTapped() {
-        print(#function)
     }
     
     // MARK: - Setup UI Elements
@@ -60,8 +42,6 @@ class PhotosCollectionViewController: UICollectionViewController {
         titleLabel.font = UIFont.systemFont(ofSize: 15, weight: .medium)
         titleLabel.textColor = #colorLiteral(red: 0.501960814, green: 0.501960814, blue: 0.501960814, alpha: 1)
         navigationItem.leftBarButtonItem = UIBarButtonItem.init(customView: titleLabel)
-        
-        navigationItem.rightBarButtonItems = [actionBarButtonItem, addBarButtonItem]
     }
     
     private func setupSearchBar() {
@@ -92,7 +72,7 @@ extension PhotosCollectionViewController: UISearchBarDelegate {
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         print(searchText)
-        
+        timer?.invalidate()
         timer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: false, block: { (_) in
             self.networkDataFetcher.fetchImages(searchTerm: searchText) { [weak self] (searchResults) in
                 guard let fetchedPhotos = searchResults else { return }

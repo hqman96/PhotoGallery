@@ -13,6 +13,11 @@ struct SearchResults: Decodable {
 }
 
 struct UnsplashPhoto: Decodable {
+    let id: String
+    let createdAt: String
+    let user: User
+    let location: Location?
+    let downloads: Int?
     let width: Int
     let height: Int
     let urls: [URLKing.RawValue: String]
@@ -24,4 +29,25 @@ struct UnsplashPhoto: Decodable {
         case small
         case thumb
     }
+    
+    enum CodingKeys: String, CodingKey {
+        case id
+        case createdAt = "created_at"
+        case user
+        case location
+        case downloads
+        case width
+        case height
+        case urls
+    }
+}
+
+// MARK: - Location
+struct Location: Decodable {
+    let title, name, city, country: String?
+}
+
+// MARK: - User
+struct User: Decodable {
+    let name: String
 }
