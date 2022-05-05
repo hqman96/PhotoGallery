@@ -64,6 +64,14 @@ class PhotosCollectionViewController: UICollectionViewController {
         cell.unsplashPhoto = unsplashPhoto
         return cell
     }
+    
+    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let detailVC = UIStoryboard(name: "Main", bundle: .none).instantiateViewController(withIdentifier: "DetailViewController") as! DetailViewController
+        navigationController?.pushViewController(detailVC, animated: true)
+        let photo = photos[indexPath.item]
+        detailVC.selectedPhoto = photo
+        collectionView.deselectItem(at: indexPath, animated: true)
+    }
 }
 
 // MARK: - Search Bar Delegate
@@ -71,7 +79,6 @@ class PhotosCollectionViewController: UICollectionViewController {
 extension PhotosCollectionViewController: UISearchBarDelegate {
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        print(searchText)
         timer?.invalidate()
         timer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: false, block: { (_) in
             self.networkDataFetcher.fetchImages(searchTerm: searchText) { [weak self] (searchResults) in
