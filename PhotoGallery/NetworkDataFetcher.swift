@@ -11,6 +11,8 @@ class NetworkDataFetcher {
     
     var networkService = NetworkService()
     
+    // MARK: - Search Request Fetch
+    
     func fetchImages(searchTerm: String, completion: @escaping (SearchResults?) -> ()) {
         networkService.request(searchTerm: searchTerm) { (data, error) in
             if let error = error {
@@ -32,6 +34,20 @@ class NetworkDataFetcher {
         } catch let jsonError {
             print("Failed to decode JSON", jsonError)
             return nil
+        }
+    }
+    
+    // MARK: - Random Photos Request Fetch
+    
+    func fetchRandomImages(completion: @escaping ([UnsplashPhoto]?) -> ()) {
+        networkService.randomPhotosRequest() { (data, error) in
+            if let error = error {
+                print("Error recieved requesting data: \(error.localizedDescription)")
+                completion(nil)
+            }
+            
+            let decode = self.decodeJSON(type: [UnsplashPhoto].self, from: data)
+            completion(decode)
         }
     }
 }

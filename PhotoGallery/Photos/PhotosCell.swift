@@ -16,6 +16,7 @@ class PhotosCell: UICollectionViewCell {
        let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.contentMode = .scaleAspectFill
+        imageView.sd_imageIndicator = SDWebImageActivityIndicator.gray
         return imageView
     }()
     

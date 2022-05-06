@@ -12,7 +12,13 @@ class PhotosCollectionViewController: UICollectionViewController {
     var networkDataFetcher = NetworkDataFetcher()
     private var timer:Timer?
     
-    private var photos = [UnsplashPhoto]()
+    private var photos = [UnsplashPhoto]() {
+        didSet {
+            DispatchQueue.main.async {
+                self.collectionView.reloadData()
+            }
+        }
+    }
     
     private let itemsPerRow: CGFloat = 2
     private let sectionInsets = UIEdgeInsets(top: 20, left: 20, bottom: 20, right: 20)
@@ -24,6 +30,7 @@ class PhotosCollectionViewController: UICollectionViewController {
         setupCollectionView()
         setupNavigationBar()
         setupSearchBar()
+        getRandomPhotos()
     }
     
     // MARK: - Setup UI Elements
@@ -49,6 +56,13 @@ class PhotosCollectionViewController: UICollectionViewController {
         searchController.hidesNavigationBarDuringPresentation = false
         searchController.obscuresBackgroundDuringPresentation = false
         searchController.searchBar.delegate = self
+    }
+    
+    private func getRandomPhotos() {
+        networkDataFetcher.fetchRandomImages { [weak self] photos in
+            guard let loadedPhotos = photos else { return }
+            self?.photos = loadedPhotos
+        }
     }
     
     // MARK: - Collection View Data Source, Collection View Delegate
@@ -78,11 +92,14 @@ extension PhotosCollectionViewController: UISearchBarDelegate {
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         timer?.invalidate()
-        timer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: false, block: { (_) in
-            self.networkDataFetcher.fetchImages(searchTerm: searchText) { [weak self] (searchResults) in
-                guard let fetchedPhotos = searchResults else { return }
-                self?.photos = fetchedPhotos.results
-                self?.collectionView.reloadData()
+        timer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: false, block: { [weak self] _ in
+            if searchText.isEmpty {
+                self?.getRandomPhotos()
+            } else {
+                self?.networkDataFetcher.fetchImages(searchTerm: searchText) { (searchResults) in
+                    guard let fetchedPhotos = searchResults else { return }
+                    self?.photos = fetchedPhotos.results
+                }
             }
         })
     }

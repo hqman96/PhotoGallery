@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import SDWebImage
 
 class DetailViewController: UIViewController {
     let identifier = "DetailViewController"
@@ -38,6 +39,7 @@ class DetailViewController: UIViewController {
         let photoUrl = selectedPhoto.urls["regular"]
         guard let imageUrl = photoUrl, let url = URL(string: imageUrl) else { return }
         photoImageView.sd_setImage(with: url, completed: nil)
+        photoImageView.sd_imageIndicator = SDWebImageActivityIndicator.gray
     }
     
    private func setupDate() {
