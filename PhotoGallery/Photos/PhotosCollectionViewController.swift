@@ -103,6 +103,12 @@ extension PhotosCollectionViewController: UISearchBarDelegate {
             }
         })
     }
+    
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        if searchBar.text != "" {
+            getRandomPhotos()
+        }
+    }
 }
 
 // MARK: - Collection View Delegate Flow Layout
