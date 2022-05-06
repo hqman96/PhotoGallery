@@ -68,6 +68,13 @@
                             <constraint firstItem="N8H-Ra-A5F" firstAttribute="top" secondItem="fmE-Xn-Oxu" secondAttribute="top" constant="16" id="ez8-Uf-s7p"/>
                         </constraints>
                     </view>
+                    <connections>
+                        <outlet property="authorsNameLabel" destination="Oq0-F7-zpl" id="l9l-BR-6n0"/>
+                        <outlet property="dateLabel" destination="Jlz-aW-hcW" id="gbq-LF-bkF"/>
+                        <outlet property="downloadsLabel" destination="2za-WJ-S2s" id="V7O-CS-NeQ"/>
+                        <outlet property="locationLabel" destination="YCo-FM-Yth" id="Dps-FR-Eww"/>
+                        <outlet property="photoImageView" destination="OfD-uy-m7a" id="JEw-Z0-Qou"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="FIX-fI-Dmj" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>

@@ -29,9 +29,7 @@ class PhotosCollectionViewController: UICollectionViewController {
     // MARK: - Setup UI Elements
     
     private func setupCollectionView() {
-        collectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: "CellId")
         collectionView.register(PhotosCell.self, forCellWithReuseIdentifier: "photoCell")
-        
         collectionView.layoutMargins = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
         collectionView.contentInsetAdjustmentBehavior = .automatic
     }
