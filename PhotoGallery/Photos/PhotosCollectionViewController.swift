@@ -58,14 +58,20 @@ class PhotosCollectionViewController: UICollectionViewController {
         searchController.searchBar.delegate = self
     }
     
+    // MARK: - Other
+    
     private func getRandomPhotos() {
         networkDataFetcher.fetchRandomImages { [weak self] photos in
             guard let loadedPhotos = photos else { return }
             self?.photos = loadedPhotos
         }
     }
+}
+
+// MARK: - Collection View Data Source, Collection View Delegate
+
+extension PhotosCollectionViewController {
     
-    // MARK: - Collection View Data Source, Collection View Delegate
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return photos.count
     }
@@ -105,7 +111,7 @@ extension PhotosCollectionViewController: UISearchBarDelegate {
     }
     
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
-        if searchBar.text != "" {
+        if let text = searchBar.text, !text.isEmpty {
             getRandomPhotos()
         }
     }

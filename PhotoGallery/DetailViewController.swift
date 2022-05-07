@@ -9,12 +9,9 @@ import UIKit
 import SDWebImage
 
 class DetailViewController: UIViewController {
-    let identifier = "DetailViewController"
+    
     var selectedPhoto: UnsplashPhoto!
         
-
-  
-    
     @IBOutlet weak var photoImageView: UIImageView!
     @IBOutlet weak var authorsNameLabel: UILabel!
     @IBOutlet weak var dateLabel: UILabel!
@@ -28,18 +25,17 @@ class DetailViewController: UIViewController {
         setupDownloads()
         authorsNameLabel.text = "Author's name: " + selectedPhoto.user.name
         locationLabel.text = "Location: " + (selectedPhoto.location?.title ?? "None")
-        print(selectedPhoto.location.customMirror)
-        print(selectedPhoto.location?.name ?? "123")
-        print(selectedPhoto.location?.title ?? "456")
 
 
     }
+    
+    // MARK: - Setup UI Elements' Data
     
     private func setupPhotoImage() {
         let photoUrl = selectedPhoto.urls["regular"]
         guard let imageUrl = photoUrl, let url = URL(string: imageUrl) else { return }
         photoImageView.sd_setImage(with: url, completed: nil)
-        photoImageView.sd_imageIndicator = SDWebImageActivityIndicator.gray
+       
     }
     
    private func setupDate() {
