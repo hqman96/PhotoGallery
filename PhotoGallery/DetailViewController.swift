@@ -25,8 +25,10 @@ class DetailViewController: UIViewController {
         setupDownloads()
         authorsNameLabel.text = "Author's name: " + selectedPhoto.user.name
         locationLabel.text = "Location: " + (selectedPhoto.location?.title ?? "None")
-
-
+    }
+    
+    @IBAction func likeButton(_ sender: Any) {
+        Base.shared.savePhoto(likedPhoto: selectedPhoto)
     }
     
     // MARK: - Setup UI Elements' Data
@@ -35,7 +37,6 @@ class DetailViewController: UIViewController {
         let photoUrl = selectedPhoto.urls["regular"]
         guard let imageUrl = photoUrl, let url = URL(string: imageUrl) else { return }
         photoImageView.sd_setImage(with: url, completed: nil)
-       
     }
     
    private func setupDate() {

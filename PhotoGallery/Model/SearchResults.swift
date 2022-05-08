@@ -7,12 +7,12 @@
 
 import Foundation
 
-struct SearchResults: Decodable {
+struct SearchResults: Codable {
     let total: Int
     let results: [UnsplashPhoto]
 }
 
-struct UnsplashPhoto: Decodable {
+struct UnsplashPhoto: Codable {
     let id: String
     let createdAt: String
     let user: User
@@ -43,11 +43,12 @@ struct UnsplashPhoto: Decodable {
 }
 
 // MARK: - Location
-struct Location: Decodable {
+struct Location: Codable {
     let title, name, city, country: String?
 }
 
 // MARK: - User
-struct User: Decodable {
+struct User: Codable {
     let name: String
 }
+
