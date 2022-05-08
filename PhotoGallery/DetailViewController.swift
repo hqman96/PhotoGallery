@@ -11,12 +11,22 @@ import SDWebImage
 class DetailViewController: UIViewController {
     
     var selectedPhoto: UnsplashPhoto!
-        
+        var buttonFlag = true
     @IBOutlet weak var photoImageView: UIImageView!
     @IBOutlet weak var authorsNameLabel: UILabel!
     @IBOutlet weak var dateLabel: UILabel!
     @IBOutlet weak var locationLabel: UILabel!
     @IBOutlet weak var downloadsLabel: UILabel!
+    @IBOutlet weak var likeButton: UIButton!
+    
+    override func viewWillAppear(_ animated: Bool) {
+        if Base.shared.likedPhotos.contains(selectedPhoto) {
+            buttonFlag = false
+            self.likeButton.setBackgroundImage(UIImage(systemName: "heart.fill"), for: .normal)
+        } else {
+            self.likeButton.setBackgroundImage(UIImage(systemName: "heart"), for: .normal)
+        }
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -28,7 +38,16 @@ class DetailViewController: UIViewController {
     }
     
     @IBAction func likeButton(_ sender: Any) {
-        Base.shared.savePhoto(likedPhoto: selectedPhoto)
+        if buttonFlag {
+            Base.shared.savePhoto(likedPhoto: selectedPhoto)
+            buttonFlag = false
+            self.likeButton.setBackgroundImage(UIImage(systemName: "heart.fill"), for: .normal)
+        } else {
+            Base.shared.deletePhoto(unlikedPhoto: selectedPhoto)
+            buttonFlag = true
+            self.likeButton.setBackgroundImage(UIImage(systemName: "heart"), for: .normal)
+        }
+        
     }
     
     // MARK: - Setup UI Elements' Data

@@ -31,4 +31,16 @@ class Base {
         let photo = likedPhoto
         likedPhotos.insert(photo, at: 0)
     }
+    
+    func deletePhoto(unlikedPhoto: UnsplashPhoto) {
+        var subLikedPhotos = likedPhotos
+        
+        for subLikedPhoto in subLikedPhotos {
+            if subLikedPhoto.id == unlikedPhoto.id {
+                guard let photoIndex = subLikedPhotos.firstIndex(of: subLikedPhoto) else { return }
+                subLikedPhotos.remove(at: photoIndex)
+            }
+        }
+        likedPhotos = subLikedPhotos
+    }
 }

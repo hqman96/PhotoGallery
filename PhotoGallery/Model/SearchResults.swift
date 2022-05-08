@@ -7,11 +7,13 @@
 
 import Foundation
 
+// MARK: - SearchResults
 struct SearchResults: Codable {
     let total: Int
     let results: [UnsplashPhoto]
 }
 
+// MARK: - UnsplashPhoto
 struct UnsplashPhoto: Codable {
     let id: String
     let createdAt: String
@@ -52,6 +54,7 @@ struct User: Codable {
     let name: String
 }
 
+// MARK: - UnsplashPhoto Equatable Protocol
 extension UnsplashPhoto: Equatable {
     static func == (lhs: UnsplashPhoto, rhs: UnsplashPhoto) -> Bool {
         return lhs.id == rhs.id &&
