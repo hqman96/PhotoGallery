@@ -57,13 +57,6 @@ struct User: Codable {
 // MARK: - UnsplashPhoto Equatable Protocol
 extension UnsplashPhoto: Equatable {
     static func == (lhs: UnsplashPhoto, rhs: UnsplashPhoto) -> Bool {
-        return lhs.id == rhs.id &&
-            lhs.createdAt == rhs.createdAt &&
-            lhs.user.name == rhs.user.name &&
-            lhs.location?.title == rhs.location?.title &&
-            lhs.downloads == rhs.downloads &&
-            lhs.width == rhs.width &&
-            lhs.height == rhs.height &&
-            lhs.urls == rhs.urls
+        return lhs.id == rhs.id 
     }
 }

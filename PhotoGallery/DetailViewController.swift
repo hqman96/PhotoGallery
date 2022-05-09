@@ -11,7 +11,7 @@ import SDWebImage
 class DetailViewController: UIViewController {
     
     var selectedPhoto: UnsplashPhoto!
-        var buttonFlag = true
+    var photoIsLiked = false
     @IBOutlet weak var photoImageView: UIImageView!
     @IBOutlet weak var authorsNameLabel: UILabel!
     @IBOutlet weak var dateLabel: UILabel!
@@ -21,7 +21,7 @@ class DetailViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         if Base.shared.likedPhotos.contains(selectedPhoto) {
-            buttonFlag = false
+            photoIsLiked = true
             self.likeButton.setBackgroundImage(UIImage(systemName: "heart.fill"), for: .normal)
         } else {
             self.likeButton.setBackgroundImage(UIImage(systemName: "heart"), for: .normal)
@@ -37,15 +37,16 @@ class DetailViewController: UIViewController {
         locationLabel.text = "Location: " + (selectedPhoto.location?.title ?? "None")
     }
     
-    @IBAction func likeButton(_ sender: Any) {
-        if buttonFlag {
-            Base.shared.savePhoto(likedPhoto: selectedPhoto)
-            buttonFlag = false
-            self.likeButton.setBackgroundImage(UIImage(systemName: "heart.fill"), for: .normal)
-        } else {
+    @IBAction func likeButtonTapped(_ sender: Any) {
+        if photoIsLiked {
             Base.shared.deletePhoto(unlikedPhoto: selectedPhoto)
-            buttonFlag = true
+            photoIsLiked = false
             self.likeButton.setBackgroundImage(UIImage(systemName: "heart"), for: .normal)
+            setupAlert()
+        } else {
+            Base.shared.savePhoto(likedPhoto: selectedPhoto)
+            photoIsLiked = true
+            self.likeButton.setBackgroundImage(UIImage(systemName: "heart.fill"), for: .normal)
         }
         
     }
@@ -58,13 +59,13 @@ class DetailViewController: UIViewController {
         photoImageView.sd_setImage(with: url, completed: nil)
     }
     
-   private func setupDate() {
+    private func setupDate() {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ssZZZZZ"
-
+        
         let dateFormatterPrint = DateFormatter()
         dateFormatterPrint.dateFormat = "MMM dd, yyyy"
-
+        
         if let date = dateFormatter.date(from: selectedPhoto.createdAt) {
             dateLabel.text = "Created at: " + dateFormatterPrint.string(from: date)
         } else {
@@ -74,9 +75,16 @@ class DetailViewController: UIViewController {
     
     private func setupDownloads() {
         if let downloads = selectedPhoto.downloads {
-        downloadsLabel.text = "Downloads: " + String(describing: downloads)
+            downloadsLabel.text = "Downloads: " + String(describing: downloads)
         } else {
             downloadsLabel.text = "Downloads: None"
         }
+    }
+    
+    private func setupAlert() {
+        let unlikeAlertController = UIAlertController(title: "", message: "This photo has been removed from your collection.", preferredStyle: .alert)
+        let unlikeAlertAction = UIAlertAction(title: "Okay", style: .default, handler: .none)
+        unlikeAlertController.addAction(unlikeAlertAction)
+        self.present(unlikeAlertController, animated: true, completion: nil)
     }
 }

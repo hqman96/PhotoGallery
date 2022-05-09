@@ -57,7 +57,7 @@
                                             <color key="titleColor" systemColor="labelColor"/>
                                         </state>
                                         <connections>
-                                            <action selector="likeButton:" destination="oYh-pS-o2p" eventType="touchUpInside" id="yvQ-pR-LTG"/>
+                                            <action selector="likeButtonTapped:" destination="oYh-pS-o2p" eventType="touchUpInside" id="yvQ-pR-LTG"/>
                                         </connections>
                                     </button>
                                 </subviews>
