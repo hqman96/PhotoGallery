@@ -7,7 +7,7 @@
 
 import UIKit
 
-class MainTabBarController: UITabBarController {
+final class MainTabBarController: UITabBarController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -18,8 +18,6 @@ class MainTabBarController: UITabBarController {
         
         viewControllers = [
             generateNavigationController(rootViewController: photosVC, title: "Gallery", image: #imageLiteral(resourceName: "icons")), generateNavigationController(rootViewController: LikesTableViewController(), title: "My Collection", image: #imageLiteral(resourceName: "heart"))
-            
-            
         ]
     }
     

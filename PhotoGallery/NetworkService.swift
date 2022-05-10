@@ -7,8 +7,16 @@
 
 import Foundation
 
-class NetworkService {
+final class NetworkService {
     
+    var clientKey: String {
+        if let path = Bundle.main.path(forResource: "Key", ofType: "plist"),
+           let key = NSDictionary(contentsOfFile: path)?["clientID"] as? String {
+            return key
+        } else {
+            return ""
+        }
+    }
     // MARK: - Search Request
     
     func request(searchTerm: String, completion: @escaping (Data?, Error?) -> Void) {
@@ -23,7 +31,7 @@ class NetworkService {
     
     private func prepareHeaders() -> [String:String]? {
         var headers = [String:String]()
-        headers["Authorization"] = "Client-ID JOCF05ed5jeFs_wdUSNX_c71ezeRH3xYjp_c-fzgies"
+        headers["Authorization"] = clientKey
         return headers
     }
     

@@ -7,9 +7,9 @@
 
 import UIKit
 
-class PhotosCollectionViewController: UICollectionViewController {
+final class PhotosCollectionViewController: UICollectionViewController {
     
-    var networkDataFetcher = NetworkDataFetcher()
+    private var networkDataFetcher = NetworkDataFetcher()
     private var timer:Timer?
     
     private var photos = [UnsplashPhoto]() {
@@ -77,14 +77,15 @@ extension PhotosCollectionViewController {
     }
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "photoCell", for: indexPath) as! PhotosCell
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "photoCell", for: indexPath) as? PhotosCell else
+        { return UICollectionViewCell() }
         let unsplashPhoto = photos[indexPath.item]
         cell.unsplashPhoto = unsplashPhoto
         return cell
     }
     
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let detailVC = UIStoryboard(name: "Main", bundle: .none).instantiateViewController(withIdentifier: "DetailViewController") as! DetailViewController
+        guard let detailVC = UIStoryboard(name: "Main", bundle: .none).instantiateViewController(withIdentifier: "DetailViewController") as? DetailViewController else { return }
         navigationController?.pushViewController(detailVC, animated: true)
         let photo = photos[indexPath.item]
         detailVC.selectedPhoto = photo

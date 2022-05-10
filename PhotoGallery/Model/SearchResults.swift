@@ -22,9 +22,9 @@ struct UnsplashPhoto: Codable {
     let downloads: Int?
     let width: Int
     let height: Int
-    let urls: [URLKing.RawValue: String]
+    let urls: [PhotoURL.RawValue: String]
     
-    enum URLKing: String {
+    enum PhotoURL: String {
         case raw
         case full
         case regular

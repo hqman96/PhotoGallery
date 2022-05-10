@@ -1,5 +1,5 @@
 //
-//  Base.swift
+//  Storage.swift
 //  PhotoGallery
 //
 //  Created by Георгий on 08.05.2022.
@@ -7,15 +7,25 @@
 
 import Foundation
 
-class Base {
+final class Storage {
     
-    let defaults = UserDefaults.standard
-    static let shared = Base()
+    // MARK: - Singleton
+    
+    static let shared: Storage = {
+        let instance = Storage()
+        return instance
+    }()
+    
+    private init() {}
+    
+    // MARK: - UserDefaults Elements
+    
+    private let defaults = UserDefaults.standard
     var likedPhotos: [UnsplashPhoto] {
-        
         get {
-            if let data = defaults.value(forKey: "likedPhotos") as? Data {
-                return try! PropertyListDecoder().decode([UnsplashPhoto].self, from: data)
+            if let data = defaults.value(forKey: "likedPhotos") as? Data,
+               let objects = try? PropertyListDecoder().decode([UnsplashPhoto].self, from: data) {
+                return objects
             } else {
                 return [UnsplashPhoto]()
             }
@@ -26,6 +36,8 @@ class Base {
             }
         }
     }
+    
+    // MARK: - Functions for saving and deleting objects from UserDefaults
     
     func savePhoto(likedPhoto: UnsplashPhoto) {
         let photo = likedPhoto

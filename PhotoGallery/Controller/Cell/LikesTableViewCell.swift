@@ -26,7 +26,7 @@ final class LikesTableViewCell: UITableViewCell {
         return authorsNameLabel
     }()
     
-    var unsplashPhoto: UnsplashPhoto! 
+    private var unsplashPhoto: UnsplashPhoto!
     
     override func prepareForReuse() {
         super.prepareForReuse()
@@ -47,15 +47,15 @@ final class LikesTableViewCell: UITableViewCell {
     private func addConstraints() {
         NSLayoutConstraint.activate([
             photoImageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10),
-            photoImageView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 2),
-            photoImageView.widthAnchor.constraint(equalToConstant: 30),
-            photoImageView.heightAnchor.constraint(equalToConstant: 30),
+            photoImageView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 5),
+            photoImageView.widthAnchor.constraint(equalToConstant: 50),
+            photoImageView.heightAnchor.constraint(equalToConstant: 50),
             
-            authorsNameLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 10),
+            authorsNameLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 23),
             authorsNameLabel.leadingAnchor.constraint(equalTo: photoImageView.trailingAnchor, constant: 10),
             authorsNameLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -5),
             
-            contentView.heightAnchor.constraint(equalToConstant: 35)
+            contentView.heightAnchor.constraint(equalToConstant: 60)
         ])
     }
     

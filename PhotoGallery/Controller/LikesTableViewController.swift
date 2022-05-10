@@ -7,19 +7,24 @@
 
 import UIKit
 
-class LikesTableViewController: UITableViewController {
+final class LikesTableViewController: UITableViewController {
     
     static let identifier = "LikesTableViewController"
     
     override func viewDidLoad() {
         super.viewDidLoad()
-       setupNavigationBar()
-        tableView.register(LikesTableViewCell.self, forCellReuseIdentifier: "likeCell")
+        setupNavigationBar()
+        setupTableView()
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.tableView.reloadData()
+    }
+    
+    private func setupTableView() {
+        tableView.register(LikesTableViewCell.self, forCellReuseIdentifier: "likeCell")
+        tableView.separatorStyle = .none
     }
     
     private func setupNavigationBar() {
@@ -30,25 +35,24 @@ class LikesTableViewController: UITableViewController {
         navigationItem.leftBarButtonItem = UIBarButtonItem.init(customView: titleLabel)
     }
     
+    // MARK: - Table View Data Source, Table View Delegate
+    
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return Base.shared.likedPhotos.count
+        return Storage.shared.likedPhotos.count
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "likeCell") as! LikesTableViewCell
-        let photo = Base.shared.likedPhotos[indexPath.row]
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: "likeCell") as? LikesTableViewCell else
+        { return UITableViewCell() }
+        let photo = Storage.shared.likedPhotos[indexPath.row]
         cell.configure(with: photo)
         return cell
     }
     
-    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return UITableView.automaticDimension
-    }
-    
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let detailVC = UIStoryboard(name: "Main", bundle: .none).instantiateViewController(withIdentifier: "DetailViewController") as! DetailViewController
+        guard let detailVC = UIStoryboard(name: "Main", bundle: .none).instantiateViewController(withIdentifier: "DetailViewController") as? DetailViewController else { return }
         navigationController?.pushViewController(detailVC, animated: true)
-        let photo = Base.shared.likedPhotos[indexPath.row]
+        let photo = Storage.shared.likedPhotos[indexPath.row]
         detailVC.selectedPhoto = photo
         tableView.deselectRow(at: indexPath, animated: true)
     }

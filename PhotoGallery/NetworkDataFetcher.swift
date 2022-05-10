@@ -7,9 +7,9 @@
 
 import Foundation
 
-class NetworkDataFetcher {
+final class NetworkDataFetcher {
     
-    var networkService = NetworkService()
+    private var networkService = NetworkService()
     
     // MARK: - Search Request Fetch
     
@@ -19,13 +19,12 @@ class NetworkDataFetcher {
                 print("Error recieved requesting data: \(error.localizedDescription)")
                 completion(nil)
             }
-            
             let decode = self.decodeJSON(type: SearchResults.self, from: data)
             completion(decode)
         }
     }
     
-    func decodeJSON<T: Decodable>(type: T.Type, from: Data?) -> T? {
+    private func decodeJSON<T: Decodable>(type: T.Type, from: Data?) -> T? {
         let decoder = JSONDecoder()
         guard let data = from else { return nil }
         do {
@@ -45,7 +44,6 @@ class NetworkDataFetcher {
                 print("Error recieved requesting data: \(error.localizedDescription)")
                 completion(nil)
             }
-            
             let decode = self.decodeJSON(type: [UnsplashPhoto].self, from: data)
             completion(decode)
         }

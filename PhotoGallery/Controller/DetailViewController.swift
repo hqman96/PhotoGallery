@@ -8,10 +8,19 @@
 import UIKit
 import SDWebImage
 
-class DetailViewController: UIViewController {
+final class DetailViewController: UIViewController {
     
     var selectedPhoto: UnsplashPhoto!
-    var photoIsLiked = false
+    private var photoIsLiked = false {
+        didSet {
+            if photoIsLiked {
+                self.likeButton.setBackgroundImage(UIImage(systemName: "heart.fill"), for: .normal)
+            } else {
+                self.likeButton.setBackgroundImage(UIImage(systemName: "heart"), for: .normal)
+            }
+        }
+    }
+    
     @IBOutlet weak var photoImageView: UIImageView!
     @IBOutlet weak var authorsNameLabel: UILabel!
     @IBOutlet weak var dateLabel: UILabel!
@@ -20,12 +29,7 @@ class DetailViewController: UIViewController {
     @IBOutlet weak var likeButton: UIButton!
     
     override func viewWillAppear(_ animated: Bool) {
-        if Base.shared.likedPhotos.contains(selectedPhoto) {
-            photoIsLiked = true
-            self.likeButton.setBackgroundImage(UIImage(systemName: "heart.fill"), for: .normal)
-        } else {
-            self.likeButton.setBackgroundImage(UIImage(systemName: "heart"), for: .normal)
-        }
+        photoIsLiked = Storage.shared.likedPhotos.contains(selectedPhoto)
     }
     
     override func viewDidLoad() {
@@ -39,16 +43,12 @@ class DetailViewController: UIViewController {
     
     @IBAction func likeButtonTapped(_ sender: Any) {
         if photoIsLiked {
-            Base.shared.deletePhoto(unlikedPhoto: selectedPhoto)
-            photoIsLiked = false
-            self.likeButton.setBackgroundImage(UIImage(systemName: "heart"), for: .normal)
+            Storage.shared.deletePhoto(unlikedPhoto: selectedPhoto)
             setupAlert()
         } else {
-            Base.shared.savePhoto(likedPhoto: selectedPhoto)
-            photoIsLiked = true
-            self.likeButton.setBackgroundImage(UIImage(systemName: "heart.fill"), for: .normal)
+            Storage.shared.savePhoto(likedPhoto: selectedPhoto)
         }
-        
+        photoIsLiked.toggle()
     }
     
     // MARK: - Setup UI Elements' Data
