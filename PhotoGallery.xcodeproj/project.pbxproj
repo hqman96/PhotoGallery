@@ -93,24 +93,14 @@
 		6646F663282202330006488F /* PhotoGallery */ = {
 			isa = PBXGroup;
 			children = (
+				66F7DC13282AAB2F00E0BA4B /* Service */,
 				66F7DC0A2829A35C00E0BA4B /* Supporting */,
 				66E7441C28245B2800E5588E /* Model */,
 				66F7DC082829A2D000E0BA4B /* View */,
 				66F7DC0628299DC100E0BA4B /* Controller */,
-				66E7441B28245B0F00E5588E /* Service */,
 				6646F6722822023A0006488F /* Info.plist */,
 			);
 			path = PhotoGallery;
-			sourceTree = "<group>";
-		};
-		66E7441B28245B0F00E5588E /* Service */ = {
-			isa = PBXGroup;
-			children = (
-				6610207D282237B000F47CBF /* NetworkService.swift */,
-				661020802822959C00F47CBF /* NetworkDataFetcher.swift */,
-				66F7DBF92827E3B300E0BA4B /* Storage.swift */,
-			);
-			name = Service;
 			sourceTree = "<group>";
 		};
 		66E7441C28245B2800E5588E /* Model */ = {
@@ -161,6 +151,16 @@
 				6646F679282202B80006488F /* .gitignore */,
 			);
 			path = Supporting;
+			sourceTree = "<group>";
+		};
+		66F7DC13282AAB2F00E0BA4B /* Service */ = {
+			isa = PBXGroup;
+			children = (
+				6610207D282237B000F47CBF /* NetworkService.swift */,
+				661020802822959C00F47CBF /* NetworkDataFetcher.swift */,
+				66F7DBF92827E3B300E0BA4B /* Storage.swift */,
+			);
+			path = Service;
 			sourceTree = "<group>";
 		};
 		C47A3FD490D8508BFADE45AC /* Pods */ = {
