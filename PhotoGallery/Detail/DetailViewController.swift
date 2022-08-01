@@ -10,17 +10,8 @@ import SDWebImage
 
 final class DetailViewController: UIViewController {
     
-    var selectedPhoto: UnsplashPhoto!
-    private var photoIsLiked = false {
-        didSet {
-            if photoIsLiked {
-                self.likeButton.setBackgroundImage(UIImage(systemName: "heart.fill"), for: .normal)
-            } else {
-                self.likeButton.setBackgroundImage(UIImage(systemName: "heart"), for: .normal)
-            }
-        }
-    }
-    
+    var viewModel: DetailViewModelProtocol!
+        
     @IBOutlet weak var photoImageView: UIImageView!
     @IBOutlet weak var authorsNameLabel: UILabel!
     @IBOutlet weak var dateLabel: UILabel!
@@ -29,7 +20,7 @@ final class DetailViewController: UIViewController {
     @IBOutlet weak var likeButton: UIButton!
     
     override func viewWillAppear(_ animated: Bool) {
-        photoIsLiked = Storage.shared.likedPhotos.contains(selectedPhoto)
+        viewModel.updateLikeStatus()
     }
     
     override func viewDidLoad() {
@@ -37,24 +28,19 @@ final class DetailViewController: UIViewController {
         setupPhotoImage()
         setupDate()
         setupDownloads()
-        authorsNameLabel.text = "Author's name: " + selectedPhoto.user.name
-        locationLabel.text = "Location: " + (selectedPhoto.location?.title ?? "None")
+        authorsNameLabel.text = "Author's name: " + viewModel.selectedPhoto.user.name
+        locationLabel.text = "Location: " + (viewModel.selectedPhoto.location?.title ?? "N/A")
+        bindViewModel()
     }
     
     @IBAction func likeButtonTapped(_ sender: Any) {
-        if photoIsLiked {
-            Storage.shared.deletePhoto(unlikedPhoto: selectedPhoto)
-            setupAlert()
-        } else {
-            Storage.shared.savePhoto(likedPhoto: selectedPhoto)
-        }
-        photoIsLiked.toggle()
+        viewModel.likeButtonTapped()
     }
     
     // MARK: - Setup UI Elements' Data
     
     private func setupPhotoImage() {
-        let photoUrl = selectedPhoto.urls["regular"]
+        let photoUrl = viewModel.selectedPhoto.urls["regular"]
         guard let imageUrl = photoUrl, let url = URL(string: imageUrl) else { return }
         photoImageView.sd_setImage(with: url, completed: nil)
     }
@@ -66,7 +52,7 @@ final class DetailViewController: UIViewController {
         let dateFormatterPrint = DateFormatter()
         dateFormatterPrint.dateFormat = "MMM dd, yyyy"
         
-        if let date = dateFormatter.date(from: selectedPhoto.createdAt) {
+        if let date = dateFormatter.date(from: viewModel.selectedPhoto.createdAt) {
             dateLabel.text = "Created at: " + dateFormatterPrint.string(from: date)
         } else {
             dateLabel.text = "Created at: None"
@@ -74,17 +60,28 @@ final class DetailViewController: UIViewController {
     }
     
     private func setupDownloads() {
-        if let downloads = selectedPhoto.downloads {
+        if let downloads = viewModel.selectedPhoto.downloads {
             downloadsLabel.text = "Downloads: " + String(describing: downloads)
         } else {
-            downloadsLabel.text = "Downloads: None"
+            downloadsLabel.text = "Downloads: N/A"
         }
     }
     
-    private func setupAlert() {
-        let unlikeAlertController = UIAlertController(title: "", message: "This photo has been removed from your collection.", preferredStyle: .alert)
-        let unlikeAlertAction = UIAlertAction(title: "Okay", style: .default, handler: .none)
-        unlikeAlertController.addAction(unlikeAlertAction)
-        self.present(unlikeAlertController, animated: true, completion: nil)
+    // MARK: - Other
+    func bindViewModel() {
+        viewModel.photoLikeUpdateHandler = { [weak self] isLiked in
+            if isLiked {
+                self?.likeButton.setBackgroundImage(UIImage(systemName: "heart.fill"), for: .normal)
+            } else {
+                self?.likeButton.setBackgroundImage(UIImage(systemName: "heart"), for: .normal)
+            }
+        }
+        
+        viewModel.setupAlert = { [weak self] in
+            let unlikeAlertController = UIAlertController(title: "", message: "This photo has been removed from your collection.", preferredStyle: .alert)
+            let unlikeAlertAction = UIAlertAction(title: "Okay", style: .default, handler: .none)
+            unlikeAlertController.addAction(unlikeAlertAction)
+            self?.present(unlikeAlertController, animated: true, completion: nil)
+        }
     }
 }

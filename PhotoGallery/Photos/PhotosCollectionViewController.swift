@@ -9,28 +9,21 @@ import UIKit
 
 final class PhotosCollectionViewController: UICollectionViewController {
     
-    private var networkDataFetcher = NetworkDataFetcher()
-    private var timer:Timer?
-    
-    private var photos = [UnsplashPhoto]() {
-        didSet {
-            DispatchQueue.main.async {
-                self.collectionView.reloadData()
-            }
-        }
-    }
-    
+    private var timer: Timer?
     private let itemsPerRow: CGFloat = 2
     private let sectionInsets = UIEdgeInsets(top: 20, left: 20, bottom: 20, right: 20)
     
+    var viewModel: PhotosCollectionViewModelProtocol!
+    var router: PhotosCollectionRouter!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        bindViewModel()
         collectionView.backgroundColor = .white
         setupCollectionView()
         setupNavigationBar()
         setupSearchBar()
-        getRandomPhotos()
+        viewModel?.getRandomPhotos()
     }
     
     // MARK: - Setup UI Elements
@@ -59,11 +52,11 @@ final class PhotosCollectionViewController: UICollectionViewController {
     }
     
     // MARK: - Other
-    
-    private func getRandomPhotos() {
-        networkDataFetcher.fetchRandomImages { [weak self] photos in
-            guard let loadedPhotos = photos else { return }
-            self?.photos = loadedPhotos
+    private func bindViewModel() {
+        viewModel.photosUpdateHandler = {
+            DispatchQueue.main.async {
+                self.collectionView.reloadData()
+            }
         }
     }
 }
@@ -73,22 +66,19 @@ final class PhotosCollectionViewController: UICollectionViewController {
 extension PhotosCollectionViewController {
     
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return photos.count
+        return viewModel.photos.count
     }
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "photoCell", for: indexPath) as? PhotosCell else
         { return UICollectionViewCell() }
-        let unsplashPhoto = photos[indexPath.item]
+        let unsplashPhoto = viewModel.photos[indexPath.item]
         cell.unsplashPhoto = unsplashPhoto
         return cell
     }
     
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        guard let detailVC = UIStoryboard(name: "Main", bundle: .none).instantiateViewController(withIdentifier: "DetailViewController") as? DetailViewController else { return }
-        navigationController?.pushViewController(detailVC, animated: true)
-        let photo = photos[indexPath.item]
-        detailVC.selectedPhoto = photo
+        router.goToDetailsScreen(for: viewModel.photos[indexPath.item])
         collectionView.deselectItem(at: indexPath, animated: true)
     }
 }
@@ -101,19 +91,16 @@ extension PhotosCollectionViewController: UISearchBarDelegate {
         timer?.invalidate()
         timer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: false, block: { [weak self] _ in
             if searchText.isEmpty {
-                self?.getRandomPhotos()
+                self?.viewModel.getRandomPhotos()
             } else {
-                self?.networkDataFetcher.fetchImages(searchTerm: searchText) { (searchResults) in
-                    guard let fetchedPhotos = searchResults else { return }
-                    self?.photos = fetchedPhotos.results
-                }
+                self?.viewModel.fetchImages(searchTerm: searchText)
             }
         })
     }
     
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
         if let text = searchBar.text, !text.isEmpty {
-            getRandomPhotos()
+            viewModel.getRandomPhotos()
         }
     }
 }
@@ -123,7 +110,7 @@ extension PhotosCollectionViewController: UISearchBarDelegate {
 extension PhotosCollectionViewController: UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let photo = photos[indexPath.item]
+        let photo = viewModel.photos[indexPath.item]
         let paddingSpace = sectionInsets.left * (itemsPerRow + 1)
         let avaliableWidth = view.frame.width - paddingSpace
         let widthPerItem = avaliableWidth / itemsPerRow

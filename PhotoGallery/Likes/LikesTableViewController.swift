@@ -11,6 +11,9 @@ final class LikesTableViewController: UITableViewController {
     
     static let identifier = "LikesTableViewController"
     
+    var viewModel: LikesViewModelProtocol!
+    var router: LikesRouterProtocol!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupNavigationBar()
@@ -38,22 +41,19 @@ final class LikesTableViewController: UITableViewController {
     // MARK: - Table View Data Source, Table View Delegate
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return Storage.shared.likedPhotos.count
+        return viewModel.likedPhotos.count
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "likeCell") as? LikesTableViewCell else
         { return UITableViewCell() }
-        let photo = Storage.shared.likedPhotos[indexPath.row]
+        let photo = viewModel.likedPhotos[indexPath.row]
         cell.configure(with: photo)
         return cell
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        guard let detailVC = UIStoryboard(name: "Main", bundle: .none).instantiateViewController(withIdentifier: "DetailViewController") as? DetailViewController else { return }
-        navigationController?.pushViewController(detailVC, animated: true)
-        let photo = Storage.shared.likedPhotos[indexPath.row]
-        detailVC.selectedPhoto = photo
+        router.goToDetailsScreen(for: viewModel.likedPhotos[indexPath.row])
         tableView.deselectRow(at: indexPath, animated: true)
     }
 }
